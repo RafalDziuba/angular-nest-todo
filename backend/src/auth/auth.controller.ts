@@ -14,6 +14,16 @@ import { LoginDto } from './dto/login.dto';
 import type { Response, Request } from 'express';
 import { AuthGuard } from './auth.guard';
 import { User } from './user.entity';
+import {
+  ApiTags,
+  ApiOperation,
+  ApiOkResponse,
+  ApiCreatedResponse,
+  ApiBadRequestResponse,
+  ApiUnauthorizedResponse,
+  ApiQuery,
+} from '@nestjs/swagger';
+import { UserResponseDto } from './dto/user-response.dto';
 
 interface RequestWithUser extends Request {
   user: {
@@ -22,21 +32,43 @@ interface RequestWithUser extends Request {
   };
 }
 
+@ApiTags('auth')
 @Controller('auth')
 export class AuthController {
   constructor(private readonly authService: AuthService) {}
 
   @Post('register')
+  @ApiOperation({ summary: 'Rejestracja nowego użytkownika' })
+  @ApiCreatedResponse({
+    description:
+      'Użytkownik został pomyślnie zarejestrowany. Link weryfikacyjny został wysłany na e-mail.',
+  })
+  @ApiBadRequestResponse({
+    description: 'Błędne dane wejściowe lub e-mail jest już zajęty.',
+  })
   register(@Body() registerDto: RegisterDto) {
     return this.authService.register(registerDto);
   }
 
   @Get('verify')
+  @ApiOperation({ summary: 'Weryfikacja adresu e-mail za pomocą tokenu' })
+  @ApiQuery({
+    name: 'token',
+    description: 'Token weryfikacyjny wysłany w wiadomości e-mail',
+  })
+  @ApiOkResponse({ description: 'Konto zostało pomyślnie zweryfikowane.' })
+  @ApiBadRequestResponse({ description: 'Niepoprawny token lub token wygasł.' })
   verifyEmail(@Query('token') token: string) {
     return this.authService.verifyEmail(token);
   }
 
   @Post('login')
+  @ApiOperation({ summary: 'Logowanie użytkownika' })
+  @ApiOkResponse({
+    description:
+      'Pomyślne logowanie (ustawia ciasteczko sesyjne access_token).',
+  })
+  @ApiUnauthorizedResponse({ description: 'Niepoprawne dane logowania.' })
   async login(
     @Body() loginDto: LoginDto,
     @Res({ passthrough: true }) response: Response,
@@ -56,6 +88,10 @@ export class AuthController {
   }
 
   @Post('logout')
+  @ApiOperation({ summary: 'Wylogowanie użytkownika' })
+  @ApiOkResponse({
+    description: 'Pomyślne wylogowanie (czyści ciasteczko sesyjne).',
+  })
   logout(@Res({ passthrough: true }) response: Response): { success: boolean } {
     // Czyścimy ciasteczko ustawiając datę wygaśnięcia w przeszłości
     response.clearCookie('access_token', {
@@ -70,6 +106,14 @@ export class AuthController {
 
   @UseGuards(AuthGuard)
   @Get('me')
+  @ApiOperation({ summary: 'Pobranie danych zalogowanego użytkownika' })
+  @ApiOkResponse({
+    description: 'Zwraca dane profilowe użytkownika.',
+    type: UserResponseDto,
+  })
+  @ApiUnauthorizedResponse({
+    description: 'Brak aktywnej sesji (brak lub niepoprawny token).',
+  })
   async getMe(
     @Req() request: RequestWithUser,
   ): Promise<Omit<User, 'password'>> {

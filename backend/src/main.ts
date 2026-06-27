@@ -2,6 +2,7 @@ import { NestFactory } from '@nestjs/core';
 import { AppModule } from './app.module';
 import { ValidationPipe } from '@nestjs/common';
 import cookieParser from 'cookie-parser';
+import { SwaggerModule, DocumentBuilder } from '@nestjs/swagger';
 
 async function bootstrap() {
   const app = await NestFactory.create(AppModule);
@@ -22,6 +23,16 @@ async function bootstrap() {
     origin: 'http://localhost:4200',
     credentials: true,
   });
+
+  // Konfiguracja Swaggera
+  const config = new DocumentBuilder()
+    .setTitle('To-Do App API')
+    .setDescription('Dokumentacja API dla aplikacji To-Do (Backend)')
+    .setVersion('1.0')
+    .addTag('auth', 'Autoryzacja i uwierzytelnianie')
+    .build();
+  const document = SwaggerModule.createDocument(app, config);
+  SwaggerModule.setup('api-docs', app, document);
 
   await app.listen(process.env.PORT ?? 3000);
 }
