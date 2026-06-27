@@ -125,4 +125,13 @@ export class AuthService {
 
     return { accessToken };
   }
+
+  async getUserById(id: number): Promise<Omit<User, 'password'>> {
+    const user = await this.userRepository.findOne({ where: { id } });
+    if (!user) {
+      throw new UnauthorizedException('Użytkownik nie istnieje.');
+    }
+    const { password, ...result } = user;
+    return result;
+  }
 }

@@ -1,0 +1,22 @@
+<div class="dashboard-container">
+  <div class="welcome-card">
+    <div class="welcome-header">
+      <div class="avatar-placeholder">
+        {{ userName().charAt(0).toUpperCase() }}
+      </div>
+      <h2>Witaj, {{ userName() }}!</h2>
+      <p class="email-sub">{{ userEmail() }}</p>
+    </div>
+    
+    <div class="welcome-body">
+      <p>Logowanie przebiegło pomyślnie! Zostałeś przekierowany na stronę główną.</p>
+      <p class="info-note">Dane użytkownika są pobierane w czasie rzeczywistym z reaktywnego sygnału w <code>AuthService</code>.</p>
+    </div>
+
+    <div class="welcome-actions">
+      <button (click)="onLogout()" class="btn-logout">
+        Wyloguj się
+      </button>
+    </div>
+  </div>
+</div>
