@@ -1,6 +1,7 @@
 import { Injectable, Logger } from '@nestjs/common';
 import { ConfigService } from '@nestjs/config';
 import * as nodemailer from 'nodemailer';
+import SMTPTransport from 'nodemailer/lib/smtp-transport';
 
 @Injectable()
 export class MailService {
@@ -29,7 +30,7 @@ export class MailService {
         'Brak pełnej konfiguracji SMTP w .env (wymagane: MAIL_HOST, MAIL_USER, MAIL_PASS). Tworzenie testowego konta Ethereal...',
       );
       // Utworzenie testowego konta Ethereal w celach deweloperskich
-      nodemailer.createTestAccount().then((account) => {
+      void nodemailer.createTestAccount().then((account) => {
         this.transporter = nodemailer.createTransport({
           host: account.smtp.host,
           port: account.smtp.port,
@@ -77,7 +78,9 @@ export class MailService {
     };
 
     try {
-      const info = await this.transporter.sendMail(mailOptions);
+      const info = (await this.transporter.sendMail(
+        mailOptions,
+      )) as SMTPTransport.SentMessageInfo;
       this.logger.log(`Wiadomość weryfikacyjna wysłana do: ${email}`);
       const previewUrl = nodemailer.getTestMessageUrl(info);
       if (previewUrl) {
