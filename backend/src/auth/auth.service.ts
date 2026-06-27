@@ -12,6 +12,7 @@ import { MailService } from './mail.service';
 import { JwtService } from '@nestjs/jwt';
 import * as bcrypt from 'bcryptjs';
 import * as crypto from 'crypto';
+import { AUTH_MESSAGES } from './auth.constants';
 
 @Injectable()
 export class AuthService {
@@ -30,9 +31,7 @@ export class AuthService {
       where: { email },
     });
     if (existingUser) {
-      throw new BadRequestException(
-        'Użytkownik o podanym adresie e-mail już istnieje.',
-      );
+      throw new BadRequestException(AUTH_MESSAGES.EMAIL_ALREADY_EXISTS);
     }
 
     // 2. Haszowanie hasła (sól o sile 10)
@@ -60,8 +59,7 @@ export class AuthService {
     await this.mailService.sendVerificationEmail(email, verificationToken);
 
     return {
-      message:
-        'Rejestracja pomyślna. Sprawdź swoją skrzynkę e-mail w celu weryfikacji konta.',
+      message: AUTH_MESSAGES.REGISTER_SUCCESS,
     };
   }
 
@@ -71,9 +69,7 @@ export class AuthService {
       where: { verificationToken: token },
     });
     if (!user) {
-      throw new BadRequestException(
-        'Nieprawidłowy lub wygasły token weryfikacyjny.',
-      );
+      throw new BadRequestException(AUTH_MESSAGES.INVALID_OR_EXPIRED_TOKEN);
     }
 
     // Sprawdzenie wygaśnięcia tokenu (24 godziny)
@@ -81,9 +77,7 @@ export class AuthService {
       user.verificationTokenExpiresAt &&
       user.verificationTokenExpiresAt < new Date()
     ) {
-      throw new BadRequestException(
-        'Token weryfikacyjny wygasł. Zarejestruj się ponownie lub poproś o nowy link.',
-      );
+      throw new BadRequestException(AUTH_MESSAGES.TOKEN_EXPIRED);
     }
 
     // 2. Aktualizacja statusu użytkownika
@@ -93,7 +87,7 @@ export class AuthService {
     await this.userRepository.save(user);
 
     return {
-      message: 'Konto zostało pomyślnie zweryfikowane. Możesz się zalogować.',
+      message: AUTH_MESSAGES.VERIFICATION_SUCCESS,
     };
   }
 
@@ -103,20 +97,18 @@ export class AuthService {
     // 1. Znajdź użytkownika po adresie e-mail
     const user = await this.userRepository.findOne({ where: { email } });
     if (!user) {
-      throw new UnauthorizedException('Nieprawidłowy e-mail lub hasło.');
+      throw new UnauthorizedException(AUTH_MESSAGES.INVALID_CREDENTIALS);
     }
 
     // 2. Sprawdź, czy konto jest zweryfikowane
     if (!user.isVerified) {
-      throw new UnauthorizedException(
-        'Konto nie zostało jeszcze zweryfikowane. Potwierdź swój e-mail.',
-      );
+      throw new UnauthorizedException(AUTH_MESSAGES.EMAIL_NOT_VERIFIED);
     }
 
     // 3. Porównaj przesłane hasło z zahaszowanym hasłem w bazie
     const isPasswordValid = await bcrypt.compare(password, user.password || '');
     if (!isPasswordValid) {
-      throw new UnauthorizedException('Nieprawidłowy e-mail lub hasło.');
+      throw new UnauthorizedException(AUTH_MESSAGES.INVALID_CREDENTIALS);
     }
 
     // 4. Generowanie tokenu JWT (zapisujemy ID użytkownika i e-mail w ładunku tokenu)
@@ -129,7 +121,7 @@ export class AuthService {
   async getUserById(id: number): Promise<Omit<User, 'password'>> {
     const user = await this.userRepository.findOne({ where: { id } });
     if (!user) {
-      throw new UnauthorizedException('Użytkownik nie istnieje.');
+      throw new UnauthorizedException(AUTH_MESSAGES.USER_NOT_FOUND);
     }
     const { password, ...result } = user;
     return result;
