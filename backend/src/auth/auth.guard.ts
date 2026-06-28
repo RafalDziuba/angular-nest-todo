@@ -6,11 +6,22 @@ import {
 } from '@nestjs/common';
 import { JwtService } from '@nestjs/jwt';
 import type { Request } from 'express';
+import { AUTH_MESSAGES } from './auth.constants';
 
 interface JwtPayload {
   sub: number;
   email: string;
 }
+
+// Klient wysyła żądanie do endpointu /auth/me (np. zapytanie GET o profil zalogowanego użytkownika).
+// NestJS przed wykonaniem metody kontrolera sprawdza, czy na metodę (lub całą klasę) został nałożony jakikolwiek Guard.
+// Ponieważ wykryto @UseGuards(AuthGuard), NestJS pobiera instancję klasy
+
+// AuthGuard
+//  i automatycznie wywołuje jej metodę
+
+// canActivate
+// , przekazując kontekst wykonania (ExecutionContext).
 
 @Injectable()
 export class AuthGuard implements CanActivate {
@@ -22,7 +33,7 @@ export class AuthGuard implements CanActivate {
     const token = this.extractTokenFromRequest(request);
 
     if (!token) {
-      throw new UnauthorizedException('Brak tokenu uwierzytelniającego.');
+      throw new UnauthorizedException(AUTH_MESSAGES.NO_TOKEN);
     }
 
     try {
@@ -33,7 +44,7 @@ export class AuthGuard implements CanActivate {
       // Dzięki temu kontrolery chronione tym guardem mają dostęp do zalogowanego użytkownika
       request['user'] = payload;
     } catch {
-      throw new UnauthorizedException('Nieprawidłowy lub wygasły token.');
+      throw new UnauthorizedException(AUTH_MESSAGES.INVALID_TOKEN);
     }
 
     return true;

@@ -13,6 +13,9 @@ export const AUTH_MESSAGES = {
     'Konto nie zostało jeszcze zweryfikowane. Potwierdź swój e-mail.',
   USER_NOT_FOUND: 'Użytkownik nie istnieje.',
 
+  NO_TOKEN: 'Brak tokenu uwierzytelniającego.',
+  INVALID_TOKEN: 'Nieprawidłowy lub wygasły token.',
+
   // Opisy do dokumentacji Swaggera (OpenAPI)
   REGISTER_SUMMARY: 'Rejestracja nowego użytkownika',
   REGISTER_CREATED_DESC:
