@@ -10,7 +10,6 @@
       </p>
     </div>
 
-    <!-- Wyświetlanie błędu logowania -->
     @if (errorMessage()) {
       <div class="error-message" role="alert">
         <mat-icon class="error-icon">warning</mat-icon>
@@ -22,17 +21,15 @@
       <div class="form-group">
         <mat-form-field appearance="outline">
           <mat-label>Email Address</mat-label>
-          <input
-            matInput
-            id="email"
-            formControlName="email"
-            placeholder="example@domain.com"
-          />
+          <input matInput id="email" formControlName="email" placeholder="example@domain.com" />
           <mat-icon matSuffix>email</mat-icon>
           @if (loginForm.get('email')?.hasError('required')) {
             <mat-error>Email jest wymagany</mat-error>
           }
-          @if (loginForm.get('email')?.hasError('email') && !loginForm.get('email')?.hasError('required')) {
+          @if (
+            loginForm.get('email')?.hasError('email') &&
+            !loginForm.get('email')?.hasError('required')
+          ) {
             <mat-error>Niepoprawny format email</mat-error>
           }
         </mat-form-field>
@@ -65,10 +62,8 @@
       </div>
 
       <div class="form-actions-inline">
-        <label class="checkbox-container">
-          <input type="checkbox" />
-          <span>Remember me</span>
-        </label>
+        <mat-checkbox class="example-margin">Remember me</mat-checkbox>
+
         <a href="#" class="forgot-link" (click)="$event.preventDefault()">Forgot password?</a>
       </div>
 
@@ -92,7 +87,6 @@
 
     <div class="social-login">
       <button type="button" class="btn-social">
-        <!-- Uproszczona ikonka udająca Google -->
         <span class="social-icon google">G</span> Google
       </button>
       <button type="button" class="btn-social">

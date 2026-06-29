@@ -9,6 +9,7 @@ import { MatButtonModule } from '@angular/material/button';
 import { MatCardModule } from '@angular/material/card';
 import { MatProgressSpinnerModule } from '@angular/material/progress-spinner';
 import { AuthService } from '../../../core/services/auth.service';
+import { MatCheckboxModule } from '@angular/material/checkbox';
 
 @Component({
   selector: 'app-login',
@@ -20,7 +21,8 @@ import { AuthService } from '../../../core/services/auth.service';
     MatIconModule,
     MatButtonModule,
     MatCardModule,
-    MatProgressSpinnerModule
+    MatProgressSpinnerModule,
+    MatCheckboxModule
   ],
   templateUrl: './login.html',
   styleUrl: './login.scss'
