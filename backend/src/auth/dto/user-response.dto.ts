@@ -20,6 +20,30 @@ export class UserResponseDto {
   isVerified: boolean;
 
   @ApiProperty({
+    description: 'Imię użytkownika',
+    example: 'Jan',
+  })
+  firstName: string;
+
+  @ApiProperty({
+    description: 'Nazwisko użytkownika',
+    example: 'Kowalski',
+  })
+  lastName: string;
+
+  @ApiProperty({
+    description: 'Zgoda na przetwarzanie danych osobowych',
+    example: true,
+  })
+  privacyPolicyAccepted: boolean;
+
+  @ApiProperty({
+    description: 'Zgoda na otrzymywanie newslettera',
+    example: false,
+  })
+  newsletterAccepted: boolean;
+
+  @ApiProperty({
     description: 'Data utworzenia konta',
     example: '2026-06-27T12:00:00.000Z',
   })

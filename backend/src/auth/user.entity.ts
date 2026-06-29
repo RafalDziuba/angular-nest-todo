@@ -25,6 +25,18 @@ export class User {
   @Column({ type: 'datetime', nullable: true })
   verificationTokenExpiresAt: Date | null;
 
+  @Column({ type: 'varchar', length: 50 })
+  firstName: string;
+
+  @Column({ type: 'varchar', length: 50 })
+  lastName: string;
+
+  @Column({ type: 'boolean', default: false })
+  privacyPolicyAccepted: boolean;
+
+  @Column({ type: 'boolean', default: false })
+  newsletterAccepted: boolean;
+
   @CreateDateColumn()
   createdAt: Date;
 }

@@ -24,7 +24,14 @@ export class AuthService {
   ) {}
 
   async register(registerDto: RegisterDto): Promise<{ message: string }> {
-    const { email, password } = registerDto;
+    const {
+      email,
+      password,
+      firstName,
+      lastName,
+      privacyPolicyAccepted,
+      newsletterAccepted,
+    } = registerDto;
 
     // 1. Sprawdzenie, czy użytkownik już istnieje
     const existingUser = await this.userRepository.findOne({
@@ -52,6 +59,10 @@ export class AuthService {
       verificationToken,
       verificationTokenExpiresAt,
       isVerified: false,
+      firstName,
+      lastName,
+      privacyPolicyAccepted,
+      newsletterAccepted,
     });
     await this.userRepository.save(user);
 
