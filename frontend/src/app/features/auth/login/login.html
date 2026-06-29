@@ -1,55 +1,67 @@
 <div class="login-wrapper">
-  <div class="login-card">
+  <mat-card class="login-card">
     <div class="login-header">
       <div class="logo-icon">
-        <!-- SVG checkmark matching the image icon -->
-        <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="2.5" stroke="currentColor">
-          <path stroke-linecap="round" stroke-linejoin="round" d="M9 12.75 11.25 15 15 9.75M21 12a9 9 0 1 1-18 0 9 9 0 0 1 18 0Z" />
-        </svg>
+        <img src="images/logo.svg" alt="TaskHub Logo" />
       </div>
       <h2>Welcome Back</h2>
-      <p class="subtitle">Enter your credentials to access your TaskHub workspace and boost your productivity.</p>
+      <p class="subtitle">
+        Enter your credentials to access your TaskHub workspace and boost your productivity.
+      </p>
     </div>
 
     <!-- Wyświetlanie błędu logowania -->
     @if (errorMessage()) {
-      <div class="error-message">
-        {{ errorMessage() }}
+      <div class="error-message" role="alert">
+        <mat-icon class="error-icon">warning</mat-icon>
+        <span class="error-text">{{ errorMessage() }}</span>
       </div>
     }
 
     <form [formGroup]="loginForm" (ngSubmit)="onSubmit()" class="login-form">
       <div class="form-group">
-        <label for="email">Email Address</label>
-        <input 
-          id="email" 
-          type="email" 
-          formControlName="email" 
-          placeholder="Email Address"
-          class="form-control"
-        />
-        @if (loginForm.get('email')?.touched && loginForm.get('email')?.hasError('required')) {
-          <span class="field-error">Email jest wymagany</span>
-        }
-        @if (loginForm.get('email')?.touched && loginForm.get('email')?.hasError('email')) {
-          <span class="field-error">Niepoprawny format email</span>
-        }
+        <mat-form-field appearance="outline">
+          <mat-label>Email Address</mat-label>
+          <input
+            matInput
+            id="email"
+            formControlName="email"
+            placeholder="example@domain.com"
+          />
+          <mat-icon matSuffix>email</mat-icon>
+          @if (loginForm.get('email')?.hasError('required')) {
+            <mat-error>Email jest wymagany</mat-error>
+          }
+          @if (loginForm.get('email')?.hasError('email') && !loginForm.get('email')?.hasError('required')) {
+            <mat-error>Niepoprawny format email</mat-error>
+          }
+        </mat-form-field>
       </div>
 
       <div class="form-group">
-        <label for="password">Password</label>
-        <div class="password-input-wrapper">
-          <input 
-            id="password" 
-            type="password" 
-            formControlName="password" 
+        <mat-form-field appearance="outline">
+          <mat-label>Password</mat-label>
+          <input
+            matInput
+            id="password"
+            [type]="hidePassword() ? 'password' : 'text'"
+            formControlName="password"
             placeholder="Password"
-            class="form-control"
           />
-        </div>
-        @if (loginForm.get('password')?.touched && loginForm.get('password')?.hasError('required')) {
-          <span class="field-error">Hasło jest wymagane</span>
-        }
+          <button
+            mat-icon-button
+            matSuffix
+            (click)="hidePassword.set(!hidePassword())"
+            [attr.aria-label]="'Toggle password visibility'"
+            [attr.aria-pressed]="!hidePassword()"
+            type="button"
+          >
+            <mat-icon>{{ hidePassword() ? 'visibility_off' : 'visibility' }}</mat-icon>
+          </button>
+          @if (loginForm.get('password')?.hasError('required')) {
+            <mat-error>Hasło jest wymagane</mat-error>
+          }
+        </mat-form-field>
       </div>
 
       <div class="form-actions-inline">
@@ -60,8 +72,17 @@
         <a href="#" class="forgot-link" (click)="$event.preventDefault()">Forgot password?</a>
       </div>
 
-      <button type="submit" [disabled]="loginForm.invalid" class="btn-submit">
-        Login <span class="arrow">&rarr;</span>
+      <button
+        matButton="filled"
+        type="submit"
+        [disabled]="loginForm.invalid || isLoading()"
+        class="btn-submit"
+      >
+        @if (isLoading()) {
+          <mat-spinner diameter="20" class="btn-spinner"></mat-spinner>
+        } @else {
+          Login <span class="arrow">&rarr;</span>
+        }
       </button>
     </form>
 
@@ -82,6 +103,5 @@
     <div class="register-prompt">
       Don't have an account? <a routerLink="/register" class="register-link">Register</a>
     </div>
-  </div>
+  </mat-card>
 </div>
-

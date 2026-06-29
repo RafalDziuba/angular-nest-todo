@@ -1,18 +1,26 @@
+@use '../../../../styles/variables' as *;
+
 .login-wrapper {
   display: flex;
   justify-content: center;
   align-items: center;
   min-height: calc(100vh - 80px); /* 100% wysokości minus wysokość nagłówka */
-  background: radial-gradient(circle at center, #e3eeff 0%, #cbdcf7 100%);
-  font-family: 'Outfit', 'Inter', -apple-system, sans-serif;
+  background: radial-gradient(circle at center, $brand-primary-light 0%, $brand-primary-mid 100%);
+  font-family:
+    'Outfit',
+    'Inter',
+    -apple-system,
+    sans-serif;
   padding: 1.5rem;
 }
 
-.login-card {
-  background: #ffffff;
+mat-card.login-card {
+  background: $white;
   border-radius: 16px;
-  box-shadow: 0 10px 30px rgba(74, 96, 128, 0.08), 0 1px 3px rgba(0, 0, 0, 0.02);
-  border: 1px solid rgba(224, 230, 240, 0.8);
+  box-shadow:
+    0 10px 30px $card-shadow,
+    0 1px 3px rgba(0, 0, 0, 0.02);
+  border: 1px solid $card-border;
   padding: 3rem 2.5rem;
   width: 100%;
   max-width: 460px;
@@ -32,13 +40,13 @@
     justify-content: center;
     width: 56px;
     height: 56px;
-    background-color: #0061c9;
-    color: #ffffff;
+    background-color: $brand-primary;
+    color: $white;
     border-radius: 12px;
     margin-bottom: 1.25rem;
-    box-shadow: 0 4px 12px rgba(0, 97, 201, 0.2);
+    box-shadow: 0 4px 12px $logo-shadow;
 
-    svg {
+    img, svg {
       width: 28px;
       height: 28px;
     }
@@ -47,13 +55,13 @@
   h2 {
     font-size: 1.75rem;
     font-weight: 600;
-    color: #1e293b;
+    color: $slate-800;
     margin: 0 0 0.5rem 0;
   }
 
   .subtitle {
     font-size: 0.9rem;
-    color: #64748b;
+    color: $slate-500;
     line-height: 1.5;
     margin: 0;
     max-width: 320px;
@@ -74,46 +82,80 @@
   label {
     font-size: 0.85rem;
     font-weight: 500;
-    color: #475569;
+    color: $slate-600;
+  }
+
+  mat-form-field {
+    width: 100%;
+
+    mat-icon {
+      font-size: 20px;
+      width: 20px;
+      height: 20px;
+    }
+
+    mat-icon[matSuffix] {
+      pointer-events: none;
+      margin-right: 8px;
+
+      &:hover {
+        cursor: default;
+      }
+    }
+
+    button[matSuffix] {
+      margin-right: 8px;
+    }
   }
 
   .form-control {
     width: 100%;
     padding: 0.875rem 1rem;
     font-size: 0.95rem;
-    border: 1px solid #cbd5e1;
+    border: 1px solid $slate-300;
     border-radius: 8px;
     outline: none;
     box-sizing: border-box;
     transition: all 0.2s ease-in-out;
-    color: #1e293b;
+    color: $slate-800;
 
     &::placeholder {
-      color: #94a3b8;
+      color: $slate-400;
     }
 
     &:focus {
-      border-color: #0061c9;
-      box-shadow: 0 0 0 3px rgba(0, 97, 201, 0.1);
+      border-color: $brand-primary;
+      box-shadow: 0 0 0 3px $input-focus-shadow;
     }
   }
 }
 
-.field-error {
-  font-size: 0.75rem;
-  color: #ef4444;
-  margin-top: 0.125rem;
-}
-
 .error-message {
-  background-color: #fef2f2;
-  border: 1px solid #fee2e2;
-  color: #991b1b;
-  padding: 0.75rem 1rem;
-  border-radius: 8px;
-  font-size: 0.85rem;
-  margin-bottom: 1.25rem;
+  display: flex;
+  align-items: center;
+  gap: 0.75rem;
+  background-color: var(--mat-sys-error-container);
+  color: var(--mat-sys-on-error-container);
+  border: 1px solid var(--mat-sys-error-outline, transparent);
+  padding: 0.875rem 1.25rem;
+  border-radius: 12px;
+  font-size: 0.875rem;
+  font-weight: 500;
+  margin-bottom: 1.5rem;
   text-align: left;
+  animation: fadeIn 0.3s ease;
+
+  .error-icon {
+    color: var(--mat-sys-error);
+    font-size: 20px;
+    width: 20px;
+    height: 20px;
+    flex-shrink: 0;
+  }
+
+  .error-text {
+    line-height: 1.4;
+  }
 }
 
 .form-actions-inline {
@@ -126,7 +168,7 @@
     display: flex;
     align-items: center;
     gap: 0.5rem;
-    color: #475569;
+    color: $slate-600;
     cursor: pointer;
 
     input[type='checkbox'] {
@@ -137,7 +179,7 @@
   }
 
   .forgot-link {
-    color: #0061c9;
+    color: $brand-primary;
     text-decoration: none;
     font-weight: 500;
 
@@ -148,42 +190,32 @@
 }
 
 .btn-submit {
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  gap: 0.5rem;
-  background-color: #0061c9;
-  color: #ffffff;
-  border: none;
-  border-radius: 8px;
-  padding: 0.875rem;
-  font-size: 1rem;
-  font-weight: 600;
-  cursor: pointer;
-  transition: background-color 0.2s ease;
+  width: 100%;
+  height: 48px;
   margin-top: 0.5rem;
+  font-weight: 600;
 
-  &:hover:not(:disabled) {
-    background-color: #004da3;
-  }
-
-  &:disabled {
-    background-color: #94a3b8;
-    cursor: not-allowed;
-    opacity: 0.7;
-  }
+  --mdc-filled-button-container-shape: 8px;
+  --mdc-filled-button-label-text-size: 1rem;
 
   .arrow {
     font-size: 1.1rem;
   }
+
+  .btn-spinner {
+    --mdc-circular-progress-active-indicator-color: #{$white};
+    display: inline-block;
+    margin-right: 8px;
+  }
 }
+
 
 .divider {
   display: flex;
   align-items: center;
   text-align: center;
   margin: 1.75rem 0;
-  color: #94a3b8;
+  color: $slate-400;
   font-size: 0.75rem;
   font-weight: 600;
   letter-spacing: 0.05em;
@@ -192,7 +224,7 @@
   &::after {
     content: '';
     flex: 1;
-    border-bottom: 1px solid #e2e8f0;
+    border-bottom: 1px solid $slate-200;
   }
 
   &:not(:empty)::before {
@@ -214,19 +246,19 @@
     align-items: center;
     justify-content: center;
     gap: 0.5rem;
-    background: #ffffff;
-    border: 1px solid #e2e8f0;
+    background: $white;
+    border: 1px solid $slate-200;
     border-radius: 8px;
     padding: 0.75rem;
     font-size: 0.9rem;
     font-weight: 500;
-    color: #334155;
+    color: $slate-700;
     cursor: pointer;
     transition: all 0.2s ease;
 
     &:hover {
-      background-color: #f8fafc;
-      border-color: #cbd5e1;
+      background-color: $slate-50;
+      border-color: $slate-300;
     }
 
     .social-icon {
@@ -239,10 +271,10 @@
   text-align: center;
   margin-top: 1.75rem;
   font-size: 0.85rem;
-  color: #64748b;
+  color: $slate-500;
 
   .register-link {
-    color: #0061c9;
+    color: $brand-primary;
     text-decoration: none;
     font-weight: 600;
 
@@ -252,3 +284,13 @@
   }
 }
 
+@keyframes fadeIn {
+  from {
+    opacity: 0;
+    transform: translateY(-8px);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
