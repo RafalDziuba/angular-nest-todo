@@ -4,7 +4,7 @@
   display: flex;
   justify-content: center;
   align-items: center;
-  min-height: calc(100vh - 80px); /* 100% wysokości minus wysokość nagłówka */
+  min-height: calc(100vh - #{$nav-height});
   background: radial-gradient(circle at center, $brand-primary-light 0%, $brand-primary-mid 100%);
   font-family:
     'Outfit',
