@@ -15,12 +15,9 @@ export interface User {
 export class AuthService {
   private readonly http = inject(HttpClient);
 
-  // W sygnale przechowujemy dane zalogowanego użytkownika
   readonly currentUser = signal<User | null>(null);
 
-  /**
-   * Wysyła dane logowania, a po sukcesie wywołuje /auth/me, aby pobrać i zapisać profil użytkownika.
-   */
+
   login(email: string, password: string): Observable<User> {
     return this.http.post<{ success: boolean }>('/auth/login', { email, password }).pipe(
       // switchMap pozwala nam na wykonanie kolejnego zapytania (pobranie profilu)
@@ -29,9 +26,6 @@ export class AuthService {
     );
   }
 
-  /**
-   * Pobiera profil zalogowanego użytkownika z chronionego endpointu /auth/me
-   */
   getMe(): Observable<User> {
     return this.http.get<User>('/auth/me').pipe(
       tap((user) => {
@@ -40,10 +34,16 @@ export class AuthService {
     );
   }
 
-  /**
-   * Inicjalizuje sesję przy starcie aplikacji (pobiera me, a w razie błędu czyści sygnał)
-   */
+  private hasCookie(name: string): boolean {
+    return document.cookie.split(';').some((c) => c.trim().startsWith(`${name}=`));
+  }
+
   initSession(): Observable<User | null> {
+    if (!this.hasCookie('is_logged_in')) {
+      this.currentUser.set(null);
+      return of(null);
+    }
+
     return this.getMe().pipe(
       catchError(() => {
         this.currentUser.set(null);
@@ -52,9 +52,6 @@ export class AuthService {
     );
   }
 
-  /**
-   * Wysyła żądanie wylogowania do backendu w celu wyczyszczenia ciasteczka HttpOnly
-   */
   logout(): Observable<{ success: boolean }> {
     return this.http.post<{ success: boolean }>('/auth/logout', {}).pipe(
       tap(() => {

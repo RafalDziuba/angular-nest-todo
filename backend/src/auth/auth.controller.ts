@@ -11,7 +11,7 @@ import {
 import { AuthService } from './auth.service';
 import { RegisterDto } from './dto/register.dto';
 import { LoginDto } from './dto/login.dto';
-import type { Response, Request } from 'express';
+import type { Response, Request, CookieOptions } from 'express';
 import { AuthGuard } from './auth.guard';
 import { User } from './user.entity';
 import {
@@ -32,6 +32,12 @@ interface RequestWithUser extends Request {
     email: string;
   };
 }
+
+const COOKIE_OPTIONS: CookieOptions = {
+  secure: false,
+  sameSite: 'lax',
+  path: '/',
+};
 
 @ApiTags('auth')
 @Controller('auth')
@@ -76,13 +82,16 @@ export class AuthController {
   ) {
     const result = await this.authService.login(loginDto);
 
-    // Ustawiamy ciasteczko HttpOnly
     response.cookie('access_token', result.accessToken, {
+      ...COOKIE_OPTIONS,
       httpOnly: true,
-      secure: false, // ustaw na true na produkcji (HTTPS)
-      sameSite: 'lax',
       maxAge: 24 * 60 * 60 * 1000, // 24 godziny
-      path: '/',
+    });
+
+    response.cookie('is_logged_in', 'true', {
+      ...COOKIE_OPTIONS,
+      httpOnly: false,
+      maxAge: 24 * 60 * 60 * 1000,
     });
 
     return { success: true };
@@ -94,12 +103,14 @@ export class AuthController {
     description: AUTH_MESSAGES.LOGOUT_OK_DESC,
   })
   logout(@Res({ passthrough: true }) response: Response): { success: boolean } {
-    // Czyścimy ciasteczko ustawiając datę wygaśnięcia w przeszłości
     response.clearCookie('access_token', {
+      ...COOKIE_OPTIONS,
       httpOnly: true,
-      secure: false,
-      sameSite: 'lax',
-      path: '/',
+    });
+
+    response.clearCookie('is_logged_in', {
+      ...COOKIE_OPTIONS,
+      httpOnly: false,
     });
 
     return { success: true };
