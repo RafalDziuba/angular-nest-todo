@@ -26,6 +26,18 @@ export class AuthService {
     );
   }
 
+  register(data: {
+    email: string;
+    password: string;
+    firstName: string;
+    lastName: string;
+    privacyPolicyAccepted: boolean;
+    newsletterAccepted?: boolean;
+  }): Observable<{ message: string }> {
+    return this.http.post<{ message: string }>('/auth/register', data);
+  }
+
+
   getMe(): Observable<User> {
     return this.http.get<User>('/auth/me').pipe(
       tap((user) => {

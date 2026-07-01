@@ -1,4 +1,95 @@
-<div class="auth-container">
-  <h2>Rejestracja</h2>
-  <p>Komponent rejestracji działa!</p>
-</div>
+<app-auth-layout
+  title="Utwórz konto"
+  subtitle="Zarejestruj się, aby zarządzać swoimi zadaniami w TaskHub."
+>
+  @if (errorMessage()) {
+    <div class="auth-error-message" role="alert">
+      <mat-icon class="error-icon">warning</mat-icon>
+      <span class="error-text">{{ errorMessage() }}</span>
+    </div>
+  }
+
+  @if (successMessage()) {
+    <div class="auth-success-message" role="alert">
+      <mat-icon class="success-icon">check_circle</mat-icon>
+      <span class="success-text">{{ successMessage() }}</span>
+    </div>
+  }
+
+  <form [formGroup]="registerForm" (ngSubmit)="onSubmit()" class="auth-form">
+    <app-input
+      [control]="registerForm.controls.firstName"
+      label="Imię"
+      icon="person"
+      placeholder="np. Jan"
+      [customErrors]="nameErrors"
+    ></app-input>
+    <app-input
+      [control]="registerForm.controls.lastName"
+      label="Nazwisko"
+      icon="person"
+      placeholder="np. Kowalski"
+      [customErrors]="nameErrors"
+    ></app-input>
+
+    <app-input
+      [control]="registerForm.controls.email"
+      label="Adres e-mail"
+      icon="email"
+      placeholder="example@domain.com"
+      type="email"
+    ></app-input>
+
+    <app-input
+      [control]="registerForm.controls.password"
+      label="Hasło"
+      type="password"
+      placeholder="Wpisz hasło"
+      [customErrors]="passwordErrors"
+    ></app-input>
+
+    <app-input
+      [control]="registerForm.controls.confirmPassword"
+      label="Potwierdź hasło"
+      type="password"
+      placeholder="Powtórz hasło"
+    ></app-input>
+
+    <div class="auth-form-checkboxes">
+      <mat-checkbox formControlName="privacyPolicyAccepted" class="example-margin">
+        Akceptuję politykę prywatności *
+      </mat-checkbox>
+      @if (
+        registerForm.controls.privacyPolicyAccepted.invalid &&
+        registerForm.controls.privacyPolicyAccepted.touched
+      ) {
+        <span class="checkbox-error"> Musisz zaakceptować politykę prywatności. </span>
+      }
+
+      <mat-checkbox formControlName="newsletterAccepted" class="example-margin">
+        Zgadzam się na otrzymywanie powiadomień e-mail
+      </mat-checkbox>
+    </div>
+
+    <button
+      mat-flat-button
+      type="submit"
+      [disabled]="registerForm.invalid || isLoading()"
+      class="btn-submit"
+    >
+      @if (isLoading()) {
+        <mat-spinner diameter="20" class="btn-spinner"></mat-spinner>
+      } @else {
+        Zarejestruj się <span class="arrow">&rarr;</span>
+      }
+    </button>
+  </form>
+
+  <div class="auth-divider">
+    <span>LUB ZAREJESTRUJ PRZEZ</span>
+  </div>
+
+  <app-social-login></app-social-login>
+
+  <div class="auth-prompt">Masz już konto? <a routerLink="/login">Zaloguj się</a></div>
+</app-auth-layout>

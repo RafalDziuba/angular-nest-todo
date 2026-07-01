@@ -1,0 +1,31 @@
+<div class="form-group">
+  <mat-form-field appearance="outline">
+    <mat-label>{{ label() }}</mat-label>
+    <input
+      matInput
+      [formControl]="control()"
+      [type]="isPassword() ? (hidePassword() ? 'password' : 'text') : type()"
+      [placeholder]="placeholder()"
+      [errorStateMatcher]="errorStateMatcher"
+    />
+
+    @if (isPassword()) {
+      <button
+        mat-icon-button
+        matSuffix
+        (click)="hidePassword.set(!hidePassword())"
+        [attr.aria-label]="'Zmień widoczność hasła'"
+        [attr.aria-pressed]="!hidePassword()"
+        type="button"
+      >
+        <mat-icon>{{ hidePassword() ? 'visibility_off' : 'visibility' }}</mat-icon>
+      </button>
+    } @else if (icon()) {
+      <mat-icon matSuffix>{{ icon() }}</mat-icon>
+    }
+
+    @if (getErrorMessage(); as errMsg) {
+      <mat-error>{{ errMsg }}</mat-error>
+    }
+  </mat-form-field>
+</div>

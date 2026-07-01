@@ -2,27 +2,27 @@ import { Component, inject, signal } from '@angular/core';
 import { FormBuilder, ReactiveFormsModule, Validators } from '@angular/forms';
 import { Router, RouterLink } from '@angular/router';
 import { HttpErrorResponse } from '@angular/common/http';
-import { MatFormFieldModule } from '@angular/material/form-field';
-import { MatInputModule } from '@angular/material/input';
 import { MatIconModule } from '@angular/material/icon';
 import { MatButtonModule } from '@angular/material/button';
-import { MatCardModule } from '@angular/material/card';
 import { MatProgressSpinnerModule } from '@angular/material/progress-spinner';
-import { AuthService } from '../../../core/services/auth.service';
 import { MatCheckboxModule } from '@angular/material/checkbox';
+import { AuthService } from '../../../core/services/auth.service';
+import { AuthLayoutComponent } from '../../../shared/components/auth-layout/auth-layout.component';
+import { InputComponent } from '../../../shared/components/input/input.component';
+import { SocialLoginComponent } from '../../../shared/components/social-login/social-login.component';
 
 @Component({
   selector: 'app-login',
   imports: [
     ReactiveFormsModule,
     RouterLink,
-    MatFormFieldModule,
-    MatInputModule,
     MatIconModule,
     MatButtonModule,
-    MatCardModule,
     MatProgressSpinnerModule,
-    MatCheckboxModule
+    MatCheckboxModule,
+    AuthLayoutComponent,
+    InputComponent,
+    SocialLoginComponent
   ],
   templateUrl: './login.html',
   styleUrl: './login.scss'
@@ -32,10 +32,7 @@ export class Login {
   private readonly authService = inject(AuthService);
   private readonly router = inject(Router);
 
-  protected readonly hidePassword = signal<boolean>(true);
-
   protected readonly isLoading = signal<boolean>(false);
-
   protected readonly errorMessage = signal<string | null>(null);
 
   protected readonly loginForm = this.fb.group({
@@ -70,4 +67,3 @@ export class Login {
     });
   }
 }
-

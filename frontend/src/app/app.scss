@@ -1,10 +1,17 @@
+@use '../styles/variables' as *;
+
 .app-header {
   background-color: var(--mat-sys-surface-container-low, #f7f9fc);
   border-bottom: 1px solid var(--mat-sys-outline-variant, #e0e4eb);
-  padding: 1rem 2rem;
+  height: $nav-height;
+  padding: 0 2rem;
+  box-sizing: border-box;
+  display: flex;
+  align-items: center;
   box-shadow: 0 2px 4px rgba(0, 0, 0, 0.05);
 
   .nav-container {
+    width: 100%;
     max-width: 1200px;
     margin: 0 auto;
     display: flex;
@@ -44,4 +51,3 @@
     }
   }
 }
-
