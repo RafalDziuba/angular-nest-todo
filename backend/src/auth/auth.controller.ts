@@ -27,6 +27,8 @@ import {
 import { UserResponseDto } from './dto/user-response.dto';
 import { AUTH_MESSAGES } from './auth.constants';
 import { ResendVerificationDto } from './dto/resend-verification.dto';
+import { MessageResponseDto } from './dto/message-response.dto';
+import { SuccessResponseDto } from './dto/success-response.dto';
 
 interface RequestWithUser extends Request {
   user: {
@@ -50,11 +52,12 @@ export class AuthController {
   @ApiOperation({ summary: AUTH_MESSAGES.REGISTER_SUMMARY })
   @ApiCreatedResponse({
     description: AUTH_MESSAGES.REGISTER_CREATED_DESC,
+    type: MessageResponseDto,
   })
   @ApiBadRequestResponse({
     description: AUTH_MESSAGES.REGISTER_BAD_REQUEST_DESC,
   })
-  register(@Body() registerDto: RegisterDto) {
+  register(@Body() registerDto: RegisterDto): Promise<MessageResponseDto> {
     return this.authService.register(registerDto);
   }
 
@@ -64,9 +67,12 @@ export class AuthController {
     name: 'token',
     description: AUTH_MESSAGES.VERIFY_TOKEN_PARAM_DESC,
   })
-  @ApiOkResponse({ description: AUTH_MESSAGES.VERIFY_OK_DESC })
+  @ApiOkResponse({
+    description: AUTH_MESSAGES.VERIFY_OK_DESC,
+    type: MessageResponseDto,
+  })
   @ApiBadRequestResponse({ description: AUTH_MESSAGES.VERIFY_BAD_REQUEST_DESC })
-  verifyEmail(@Query('token') token: string) {
+  verifyEmail(@Query('token') token: string): Promise<MessageResponseDto> {
     return this.authService.verifyEmail(token);
   }
 
@@ -74,6 +80,7 @@ export class AuthController {
   @ApiOperation({ summary: AUTH_MESSAGES.LOGIN_SUMMARY })
   @ApiOkResponse({
     description: AUTH_MESSAGES.LOGIN_OK_DESC,
+    type: SuccessResponseDto,
   })
   @ApiUnauthorizedResponse({
     description: AUTH_MESSAGES.LOGIN_UNAUTHORIZED_DESC,
@@ -81,7 +88,7 @@ export class AuthController {
   async login(
     @Body() loginDto: LoginDto,
     @Res({ passthrough: true }) response: Response,
-  ) {
+  ): Promise<SuccessResponseDto> {
     const result = await this.authService.login(loginDto);
 
     response.cookie('access_token', result.accessToken, {
@@ -103,8 +110,9 @@ export class AuthController {
   @ApiOperation({ summary: AUTH_MESSAGES.LOGOUT_SUMMARY })
   @ApiOkResponse({
     description: AUTH_MESSAGES.LOGOUT_OK_DESC,
+    type: SuccessResponseDto,
   })
-  logout(@Res({ passthrough: true }) response: Response): { success: boolean } {
+  logout(@Res({ passthrough: true }) response: Response): SuccessResponseDto {
     response.clearCookie('access_token', {
       ...COOKIE_OPTIONS,
       httpOnly: true,
@@ -121,8 +129,13 @@ export class AuthController {
   @Post('resend-verification')
   @HttpCode(200)
   @ApiOperation({ summary: AUTH_MESSAGES.RESEND_VERIFICATION_SUMMARY })
-  @ApiOkResponse({ description: AUTH_MESSAGES.RESEND_VERIFICATION_OK_DESC })
-  resendVerification(@Body() resendDto: ResendVerificationDto) {
+  @ApiOkResponse({
+    description: AUTH_MESSAGES.RESEND_VERIFICATION_OK_DESC,
+    type: MessageResponseDto,
+  })
+  resendVerification(
+    @Body() resendDto: ResendVerificationDto,
+  ): Promise<MessageResponseDto> {
     return this.authService.resendVerificationEmail(resendDto);
   }
 

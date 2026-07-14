@@ -9,6 +9,7 @@ import { User } from './user.entity';
 import { RegisterDto } from './dto/register.dto';
 import { LoginDto } from './dto/login.dto';
 import { ResendVerificationDto } from './dto/resend-verification.dto';
+import { MessageResponseDto } from './dto/message-response.dto';
 import { MailService } from './mail.service';
 import { JwtService } from '@nestjs/jwt';
 import * as bcrypt from 'bcryptjs';
@@ -24,7 +25,7 @@ export class AuthService {
     private readonly jwtService: JwtService,
   ) {}
 
-  async register(registerDto: RegisterDto): Promise<{ message: string }> {
+  async register(registerDto: RegisterDto): Promise<MessageResponseDto> {
     const {
       email,
       password,
@@ -75,7 +76,7 @@ export class AuthService {
     };
   }
 
-  async verifyEmail(token: string): Promise<{ message: string }> {
+  async verifyEmail(token: string): Promise<MessageResponseDto> {
     // 1. Szukamy użytkownika z pasującym tokenem
     const user = await this.userRepository.findOne({
       where: { verificationToken: token },
@@ -132,7 +133,7 @@ export class AuthService {
 
   async resendVerificationEmail(
     resendDto: ResendVerificationDto,
-  ): Promise<{ message: string }> {
+  ): Promise<MessageResponseDto> {
     const { email } = resendDto;
 
     const user = await this.userRepository.findOne({ where: { email } });
