@@ -8,6 +8,7 @@ import { Repository } from 'typeorm';
 import { User } from './user.entity';
 import { RegisterDto } from './dto/register.dto';
 import { LoginDto } from './dto/login.dto';
+import { ResendVerificationDto } from './dto/resend-verification.dto';
 import { MailService } from './mail.service';
 import { JwtService } from '@nestjs/jwt';
 import * as bcrypt from 'bcryptjs';
@@ -127,6 +128,34 @@ export class AuthService {
     const accessToken = await this.jwtService.signAsync(payload);
 
     return { accessToken };
+  }
+
+  async resendVerificationEmail(
+    resendDto: ResendVerificationDto,
+  ): Promise<{ message: string }> {
+    const { email } = resendDto;
+
+    const user = await this.userRepository.findOne({ where: { email } });
+
+    if (user && !user.isVerified) {
+      const verificationToken = crypto.randomUUID();
+
+      const verificationTokenExpiresAt = new Date();
+      verificationTokenExpiresAt.setHours(
+        verificationTokenExpiresAt.getHours() + 24,
+      );
+
+      user.verificationToken = verificationToken;
+      user.verificationTokenExpiresAt = verificationTokenExpiresAt;
+
+      await this.userRepository.save(user);
+
+      await this.mailService.sendVerificationEmail(email, verificationToken);
+    }
+
+    return {
+      message: AUTH_MESSAGES.RESEND_VERIFICATION_SUCCESS,
+    };
   }
 
   async getUserById(id: number): Promise<Omit<User, 'password'>> {

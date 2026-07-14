@@ -7,6 +7,7 @@ import {
   Res,
   UseGuards,
   Req,
+  HttpCode,
 } from '@nestjs/common';
 import { AuthService } from './auth.service';
 import { RegisterDto } from './dto/register.dto';
@@ -25,6 +26,7 @@ import {
 } from '@nestjs/swagger';
 import { UserResponseDto } from './dto/user-response.dto';
 import { AUTH_MESSAGES } from './auth.constants';
+import { ResendVerificationDto } from './dto/resend-verification.dto';
 
 interface RequestWithUser extends Request {
   user: {
@@ -114,6 +116,14 @@ export class AuthController {
     });
 
     return { success: true };
+  }
+
+  @Post('resend-verification')
+  @HttpCode(200)
+  @ApiOperation({ summary: AUTH_MESSAGES.RESEND_VERIFICATION_SUMMARY })
+  @ApiOkResponse({ description: AUTH_MESSAGES.RESEND_VERIFICATION_OK_DESC })
+  resendVerification(@Body() resendDto: ResendVerificationDto) {
+    return this.authService.resendVerificationEmail(resendDto);
   }
 
   @UseGuards(AuthGuard)

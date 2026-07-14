@@ -12,9 +12,14 @@ export const AUTH_MESSAGES = {
   EMAIL_NOT_VERIFIED:
     'Konto nie zostało jeszcze zweryfikowane. Potwierdź swój e-mail.',
   USER_NOT_FOUND: 'Użytkownik nie istnieje.',
+  RESEND_VERIFICATION_SUCCESS:
+    'Jeśli podany adres e-mail istnieje w naszym systemie i nie został jeszcze zweryfikowany, wysłaliśmy na niego nowy link weryfikacyjny.',
 
   NO_TOKEN: 'Brak tokenu uwierzytelniającego.',
   INVALID_TOKEN: 'Nieprawidłowy lub wygasły token.',
+
+  EMAIL_IS_REQUIRED: 'Pole e-mail jest wymagane.',
+  INVALID_EMAIL_FORMAT: 'Nieprawidłowy format adresu e-mail.',
 
   // Opisy do dokumentacji Swaggera (OpenAPI)
   REGISTER_SUMMARY: 'Rejestracja nowego użytkownika',
@@ -40,4 +45,8 @@ export const AUTH_MESSAGES = {
   GET_ME_SUMMARY: 'Pobranie danych zalogowanego użytkownika',
   GET_ME_OK_DESC: 'Zwraca dane profilowe użytkownika.',
   GET_ME_UNAUTHORIZED_DESC: 'Brak aktywnej sesji (brak lub niepoprawny token).',
+  RESEND_VERIFICATION_SUMMARY:
+    'Ponowne wysłanie e-maila weryfikacyjnego (zabezpieczone)',
+  RESEND_VERIFICATION_OK_DESC:
+    'Żądanie przetworzone pomyślnie. Wysłano e-mail, jeśli konto istnieje i nie jest zweryfikowane.',
 };
