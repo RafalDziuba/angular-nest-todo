@@ -40,7 +40,10 @@ export class AuthService {
       where: { email },
     });
     if (existingUser) {
-      throw new BadRequestException(AUTH_MESSAGES.EMAIL_ALREADY_EXISTS);
+      throw new BadRequestException({
+        message: AUTH_MESSAGES.EMAIL_ALREADY_EXISTS,
+        code: 'EMAIL_ALREADY_EXISTS',
+      });
     }
 
     // 2. Haszowanie hasła (sól o sile 10)
@@ -82,7 +85,10 @@ export class AuthService {
       where: { verificationToken: token },
     });
     if (!user) {
-      throw new BadRequestException(AUTH_MESSAGES.INVALID_OR_EXPIRED_TOKEN);
+      throw new BadRequestException({
+        message: AUTH_MESSAGES.INVALID_OR_EXPIRED_TOKEN,
+        code: 'INVALID_OR_EXPIRED_TOKEN',
+      });
     }
 
     // Sprawdzenie wygaśnięcia tokenu (24 godziny)
@@ -90,7 +96,10 @@ export class AuthService {
       user.verificationTokenExpiresAt &&
       user.verificationTokenExpiresAt < new Date()
     ) {
-      throw new BadRequestException(AUTH_MESSAGES.TOKEN_EXPIRED);
+      throw new BadRequestException({
+        message: AUTH_MESSAGES.TOKEN_EXPIRED,
+        code: 'TOKEN_EXPIRED',
+      });
     }
 
     // 2. Aktualizacja statusu użytkownika
@@ -110,18 +119,27 @@ export class AuthService {
     // 1. Znajdź użytkownika po adresie e-mail
     const user = await this.userRepository.findOne({ where: { email } });
     if (!user) {
-      throw new UnauthorizedException(AUTH_MESSAGES.INVALID_CREDENTIALS);
+      throw new UnauthorizedException({
+        message: AUTH_MESSAGES.INVALID_CREDENTIALS,
+        code: 'INVALID_CREDENTIALS',
+      });
     }
 
     // 2. Sprawdź, czy konto jest zweryfikowane
     if (!user.isVerified) {
-      throw new UnauthorizedException(AUTH_MESSAGES.EMAIL_NOT_VERIFIED);
+      throw new UnauthorizedException({
+        message: AUTH_MESSAGES.EMAIL_NOT_VERIFIED,
+        code: 'EMAIL_NOT_VERIFIED',
+      });
     }
 
     // 3. Porównaj przesłane hasło z zahaszowanym hasłem w bazie
     const isPasswordValid = await bcrypt.compare(password, user.password || '');
     if (!isPasswordValid) {
-      throw new UnauthorizedException(AUTH_MESSAGES.INVALID_CREDENTIALS);
+      throw new UnauthorizedException({
+        message: AUTH_MESSAGES.INVALID_CREDENTIALS,
+        code: 'INVALID_CREDENTIALS',
+      });
     }
 
     // 4. Generowanie tokenu JWT (zapisujemy ID użytkownika i e-mail w ładunku tokenu)
@@ -162,7 +180,10 @@ export class AuthService {
   async getUserById(id: number): Promise<Omit<User, 'password'>> {
     const user = await this.userRepository.findOne({ where: { id } });
     if (!user) {
-      throw new UnauthorizedException(AUTH_MESSAGES.USER_NOT_FOUND);
+      throw new UnauthorizedException({
+        message: AUTH_MESSAGES.USER_NOT_FOUND,
+        code: 'USER_NOT_FOUND',
+      });
     }
     const { password, ...result } = user;
     return result;

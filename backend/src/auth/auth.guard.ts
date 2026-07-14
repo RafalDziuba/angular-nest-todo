@@ -33,7 +33,10 @@ export class AuthGuard implements CanActivate {
     const token = this.extractTokenFromRequest(request);
 
     if (!token) {
-      throw new UnauthorizedException(AUTH_MESSAGES.NO_TOKEN);
+      throw new UnauthorizedException({
+        message: AUTH_MESSAGES.NO_TOKEN,
+        code: 'NO_TOKEN',
+      });
     }
 
     try {
@@ -44,7 +47,10 @@ export class AuthGuard implements CanActivate {
       // Dzięki temu kontrolery chronione tym guardem mają dostęp do zalogowanego użytkownika
       request['user'] = payload;
     } catch {
-      throw new UnauthorizedException(AUTH_MESSAGES.INVALID_TOKEN);
+      throw new UnauthorizedException({
+        message: AUTH_MESSAGES.INVALID_TOKEN,
+        code: 'INVALID_TOKEN',
+      });
     }
 
     return true;
