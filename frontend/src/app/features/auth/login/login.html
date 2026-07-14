@@ -5,7 +5,36 @@
   @if (errorMessage()) {
     <div class="auth-error-message" role="alert">
       <mat-icon class="error-icon">warning</mat-icon>
-      <span class="error-text">{{ errorMessage() }}</span>
+      <div class="error-content">
+        <span class="error-text">{{ errorMessage() }}</span>
+        @if (isEmailNotVerified()) {
+          <div class="resend-action-wrapper">
+            <button
+              type="button"
+              mat-button
+              (click)="onResendVerification()"
+              [disabled]="isResending() || cooldown.isActive()"
+              class="btn-resend-inline"
+            >
+              @if (isResending()) {
+                <mat-spinner diameter="16" class="resend-spinner"></mat-spinner>
+                Sending...
+              } @else if (cooldown.isActive()) {
+                Resend in {{ cooldown.seconds() }}s
+              } @else {
+                Resend verification email &rarr;
+              }
+            </button>
+          </div>
+        }
+      </div>
+    </div>
+  }
+
+  @if (resendSuccessMessage()) {
+    <div class="auth-success-message" role="alert">
+      <mat-icon class="success-icon">check_circle</mat-icon>
+      <span class="success-text">{{ resendSuccessMessage() }}</span>
     </div>
   }
 
@@ -51,5 +80,9 @@
 
   <div class="auth-prompt">
     Don't have an account? <a routerLink="/register">Register</a>
+  </div>
+
+  <div class="auth-prompt" style="margin-top: 0.75rem;">
+    Didn't receive verification email? <a routerLink="/resend-verification">Resend it</a>
   </div>
 </app-auth-layout>

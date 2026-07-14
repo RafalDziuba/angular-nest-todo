@@ -72,7 +72,7 @@ mat-card.auth-card {
 
 .auth-error-message {
   display: flex;
-  align-items: center;
+  align-items: flex-start;
   gap: 0.75rem;
   background-color: var(--mat-sys-error-container);
   color: var(--mat-sys-on-error-container);
@@ -91,9 +91,76 @@ mat-card.auth-card {
     width: 20px;
     height: 20px;
     flex-shrink: 0;
+    margin-top: 2px;
+  }
+
+  .error-content {
+    display: flex;
+    flex-direction: column;
+    gap: 8px;
+    width: 100%;
   }
 
   .error-text {
+    line-height: 1.4;
+  }
+
+  .resend-action-wrapper {
+    margin-top: 4px;
+  }
+
+  .btn-resend-inline {
+    font-size: 0.75rem !important;
+    height: 28px !important;
+    line-height: 28px !important;
+    padding: 0 10px !important;
+    background-color: rgba(239, 68, 68, 0.1) !important;
+    color: var(--mat-sys-error) !important;
+    border-radius: 6px !important;
+    font-weight: 600 !important;
+
+    &:hover:not([disabled]) {
+      background-color: rgba(239, 68, 68, 0.2) !important;
+    }
+
+    &[disabled] {
+      opacity: 0.6;
+      cursor: not-allowed;
+    }
+
+    .resend-spinner {
+      display: inline-block;
+      vertical-align: middle;
+      margin-right: 6px;
+      --mdc-circular-progress-active-indicator-color: var(--mat-sys-error);
+    }
+  }
+}
+
+.auth-success-message {
+  display: flex;
+  align-items: center;
+  gap: 0.75rem;
+  background-color: var(--mat-sys-primary-container, #e8eaf6);
+  color: var(--mat-sys-on-primary-container, #1a237e);
+  border: 1px solid var(--mat-sys-primary-outline, transparent);
+  padding: 0.875rem 1.25rem;
+  border-radius: 12px;
+  font-size: 0.875rem;
+  font-weight: 500;
+  margin-bottom: 1.5rem;
+  text-align: left;
+  animation: authFadeIn 0.3s ease;
+
+  .success-icon {
+    color: var(--mat-sys-primary, #3f51b5);
+    font-size: 20px;
+    width: 20px;
+    height: 20px;
+    flex-shrink: 0;
+  }
+
+  .success-text {
     line-height: 1.4;
   }
 }

@@ -37,6 +37,10 @@ export class AuthService {
     return this.http.post<{ message: string }>('/auth/register', data);
   }
 
+  resendVerification(email: string): Observable<{ message: string }> {
+    return this.http.post<{ message: string }>('/auth/resend-verification', { email });
+  }
+
 
   getMe(): Observable<User> {
     return this.http.get<User>('/auth/me').pipe(
