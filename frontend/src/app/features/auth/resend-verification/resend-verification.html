@@ -1,0 +1,50 @@
+<app-auth-layout
+  title="Resend Verification"
+  subtitle="Enter your email address to receive a new verification link and activate your account."
+>
+  @if (errorMessage()) {
+    <div class="auth-error-message" role="alert">
+      <mat-icon class="error-icon">warning</mat-icon>
+      <div class="error-content">
+        <span class="error-text">{{ errorMessage() }}</span>
+      </div>
+    </div>
+  }
+
+  @if (successMessage()) {
+    <div class="auth-success-message" role="alert">
+      <mat-icon class="success-icon">check_circle</mat-icon>
+      <div class="error-content">
+        <span class="success-text">{{ successMessage() }}</span>
+      </div>
+    </div>
+  }
+
+  <form [formGroup]="resendForm" (ngSubmit)="onSubmit()" class="auth-form">
+    <app-input
+      [control]="resendForm.controls.email"
+      label="Email Address"
+      icon="email"
+      placeholder="example@domain.com"
+    ></app-input>
+
+    <button
+      mat-flat-button
+      type="submit"
+      [disabled]="resendForm.invalid || isLoading() || cooldown.isActive()"
+      class="btn-submit"
+    >
+      @if (isLoading()) {
+        <mat-spinner diameter="20" class="btn-spinner"></mat-spinner>
+      } @else if (cooldown.isActive()) {
+        Resend in {{ cooldown.seconds() }}s
+      } @else {
+        Send Verification Link <span class="arrow">&rarr;</span>
+      }
+    </button>
+  </form>
+
+  <div class="auth-prompt">
+    Remember your credentials? <a routerLink="/login">Back to Login</a>
+  </div>
+</app-auth-layout>
