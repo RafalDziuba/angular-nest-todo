@@ -39,3 +39,43 @@ body {
   height: 100%;
 }
 /* You can add global styles to this file, and also import other style files */
+
+/* Custom Snackbar styling using official Sass mixin */
+.mat-mdc-snack-bar-container {
+  &.snackbar-default {
+    @include mat.snack-bar-overrides((
+      container-color: #424242,
+      supporting-text-color: #ffffff,
+      button-color: #ffffff
+    ));
+  }
+  &.snackbar-success {
+    @include mat.snack-bar-overrides((
+      container-color: #2e7d32,
+      supporting-text-color: #ffffff,
+      button-color: #ffffff
+    ));
+  }
+  &.snackbar-warning {
+    @include mat.snack-bar-overrides((
+      container-color: #f57f17,
+      supporting-text-color: #ffffff,
+      button-color: #ffffff
+    ));
+  }
+  &.snackbar-error {
+    @include mat.snack-bar-overrides((
+      container-color: #d32f2f,
+      supporting-text-color: #ffffff,
+      button-color: #ffffff
+    ));
+  }
+
+  // Ustawienie dopasowania wysokości i wyśrodkowania dla naszego szablonu
+  .mdc-snackbar__surface {
+    min-height: 48px;
+    align-items: center;
+  }
+}
+
+

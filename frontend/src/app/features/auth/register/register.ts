@@ -7,6 +7,7 @@ import { MatButtonModule } from '@angular/material/button';
 import { MatProgressSpinnerModule } from '@angular/material/progress-spinner';
 import { MatCheckboxModule } from '@angular/material/checkbox';
 import { AuthService } from '../../../core/services/auth.service';
+import { NotificationService } from '../../../core/services/notification.service';
 import { AuthLayoutComponent } from '../../../shared/components/auth-layout/auth-layout.component';
 import { InputComponent } from '../../../shared/components/input/input.component';
 import { SocialLoginComponent } from '../../../shared/components/social-login/social-login.component';
@@ -32,7 +33,9 @@ import { passwordMatchValidator } from '../../../shared/validators/password-matc
 export class Register {
   private readonly fb = inject(FormBuilder);
   private readonly authService = inject(AuthService);
+  private readonly notificationService = inject(NotificationService);
   private readonly router = inject(Router);
+
 
   protected readonly isLoading = signal<boolean>(false);
   protected readonly successMessage = signal<string | null>(null);
@@ -101,10 +104,11 @@ export class Register {
       privacyPolicyAccepted: !!privacyPolicyAccepted,
       newsletterAccepted: !!newsletterAccepted
     }).subscribe({
-
       next: (res) => {
         this.isLoading.set(false);
-        this.successMessage.set(res.message || 'Konto zostało utworzone pomyślnie! Przekierowanie...');
+        const msg = res.message || 'Konto zostało utworzone pomyślnie! Przekierowanie...';
+        this.successMessage.set(msg);
+        this.notificationService.showSuccess(msg);
         setTimeout(() => {
           this.router.navigate(['/login']);
         }, 1500);
@@ -113,8 +117,10 @@ export class Register {
         this.isLoading.set(false);
         const message = err?.error?.message || 'Wystąpił błąd podczas rejestracji. Spróbuj ponownie.';
         this.errorMessage.set(message);
+        this.notificationService.showError(message);
       }
     });
   }
+
 
 }
