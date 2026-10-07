@@ -1,0 +1,11 @@
+<div class="snackbar-content-wrapper">
+  <div class="snackbar-left">
+    @if (!data.hideIcon) {
+      <mat-icon class="snackbar-icon">{{ icon }}</mat-icon>
+    }
+    <span class="snackbar-message">{{ data.message }}</span>
+  </div>
+  <button mat-icon-button class="snackbar-close-btn" (click)="close()">
+    <mat-icon>close</mat-icon>
+  </button>
+</div>

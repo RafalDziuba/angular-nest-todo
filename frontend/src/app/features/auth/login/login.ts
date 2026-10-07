@@ -7,6 +7,7 @@ import { MatButtonModule } from '@angular/material/button';
 import { MatProgressSpinnerModule } from '@angular/material/progress-spinner';
 import { MatCheckboxModule } from '@angular/material/checkbox';
 import { AuthService } from '../../../core/services/auth.service';
+import { NotificationService } from '../../../core/services/notification.service';
 import { AuthErrorCode } from '../../../core/constants/auth.enums';
 import { useCooldown } from '../../../shared/utils/cooldown';
 import { AuthLayoutComponent } from '../../../shared/components/auth-layout/auth-layout.component';
@@ -32,14 +33,15 @@ import { SocialLoginComponent } from '../../../shared/components/social-login/so
 export class Login {
   private readonly fb = inject(FormBuilder);
   private readonly authService = inject(AuthService);
+  private readonly notificationService = inject(NotificationService);
   private readonly router = inject(Router);
 
   protected readonly isLoading = signal<boolean>(false);
-  protected readonly errorMessage = signal<string | null>(null);
   protected readonly isEmailNotVerified = signal<boolean>(false);
   protected readonly isResending = signal<boolean>(false);
   protected readonly resendSuccessMessage = signal<string | null>(null);
   protected readonly cooldown = useCooldown();
+
 
   protected readonly loginForm = this.fb.group({
     email: ['', [Validators.required, Validators.email]],
@@ -52,7 +54,6 @@ export class Login {
     }
 
     this.isLoading.set(true);
-    this.errorMessage.set(null);
     this.isEmailNotVerified.set(false);
     this.resendSuccessMessage.set(null);
     const { email, password } = this.loginForm.value;
@@ -65,12 +66,13 @@ export class Login {
     this.authService.login(email, password).subscribe({
       next: () => {
         this.isLoading.set(false);
+        this.notificationService.showSuccess('Zalogowano pomyślnie!');
         this.router.navigate(['/dashboard']);
       },
       error: (err: HttpErrorResponse) => {
         this.isLoading.set(false);
         const message = err?.error?.message || 'Błędny e-mail lub hasło. Spróbuj ponownie.';
-        this.errorMessage.set(message);
+        this.notificationService.showError(message);
 
         if (err?.error?.code === AuthErrorCode.EMAIL_NOT_VERIFIED) {
           this.isEmailNotVerified.set(true);
@@ -86,20 +88,22 @@ export class Login {
     }
 
     this.isResending.set(true);
-    this.errorMessage.set(null);
     this.resendSuccessMessage.set(null);
 
     this.authService.resendVerification(email).subscribe({
       next: (response) => {
         this.isResending.set(false);
         this.resendSuccessMessage.set(response.message);
+        this.notificationService.showSuccess(response.message);
         this.isEmailNotVerified.set(false);
         this.cooldown.start(60);
       },
       error: (err: HttpErrorResponse) => {
         this.isResending.set(false);
-        this.errorMessage.set(err?.error?.message);
+        const message = err?.error?.message || 'Wystąpił błąd. Spróbuj ponownie.';
+        this.notificationService.showError(message);
       }
     });
   }
+
 }
