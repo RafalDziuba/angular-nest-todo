@@ -1,4 +1,4 @@
-import { Component, inject, signal } from '@angular/core';
+import { ChangeDetectionStrategy, Component, inject, signal } from '@angular/core';
 import { FormBuilder, ReactiveFormsModule, Validators } from '@angular/forms';
 import { RouterLink } from '@angular/router';
 import { HttpErrorResponse } from '@angular/common/http';
@@ -22,7 +22,8 @@ import { InputComponent } from '../../../shared/components/input/input.component
     InputComponent
   ],
   templateUrl: './resend-verification.html',
-  styleUrl: '../login/login.scss'
+  styleUrl: '../login/login.scss',
+  changeDetection: ChangeDetectionStrategy.OnPush
 })
 export class ResendVerification {
   private readonly fb = inject(FormBuilder);

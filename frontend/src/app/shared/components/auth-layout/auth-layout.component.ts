@@ -1,10 +1,10 @@
-import { Component, input } from '@angular/core';
+import { ChangeDetectionStrategy, Component, input } from '@angular/core';
 import { MatCardModule } from '@angular/material/card';
 
 @Component({
   selector: 'app-auth-layout',
-  standalone: true,
   imports: [MatCardModule],
+  changeDetection: ChangeDetectionStrategy.OnPush,
   template: `
     <div class="auth-wrapper">
       <mat-card class="auth-card">
