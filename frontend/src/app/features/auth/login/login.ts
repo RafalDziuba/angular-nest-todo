@@ -37,7 +37,6 @@ export class Login {
   private readonly router = inject(Router);
 
   protected readonly isLoading = signal<boolean>(false);
-  protected readonly errorMessage = signal<string | null>(null);
   protected readonly isEmailNotVerified = signal<boolean>(false);
   protected readonly isResending = signal<boolean>(false);
   protected readonly resendSuccessMessage = signal<string | null>(null);
@@ -55,7 +54,6 @@ export class Login {
     }
 
     this.isLoading.set(true);
-    this.errorMessage.set(null);
     this.isEmailNotVerified.set(false);
     this.resendSuccessMessage.set(null);
     const { email, password } = this.loginForm.value;
@@ -74,7 +72,6 @@ export class Login {
       error: (err: HttpErrorResponse) => {
         this.isLoading.set(false);
         const message = err?.error?.message || 'Błędny e-mail lub hasło. Spróbuj ponownie.';
-        this.errorMessage.set(message);
         this.notificationService.showError(message);
 
         if (err?.error?.code === AuthErrorCode.EMAIL_NOT_VERIFIED) {
@@ -91,7 +88,6 @@ export class Login {
     }
 
     this.isResending.set(true);
-    this.errorMessage.set(null);
     this.resendSuccessMessage.set(null);
 
     this.authService.resendVerification(email).subscribe({
@@ -105,7 +101,6 @@ export class Login {
       error: (err: HttpErrorResponse) => {
         this.isResending.set(false);
         const message = err?.error?.message || 'Wystąpił błąd. Spróbuj ponownie.';
-        this.errorMessage.set(message);
         this.notificationService.showError(message);
       }
     });
