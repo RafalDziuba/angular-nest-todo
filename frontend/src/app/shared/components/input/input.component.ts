@@ -1,4 +1,4 @@
-import { Component, input, signal } from '@angular/core';
+import { ChangeDetectionStrategy, Component, input, signal } from '@angular/core';
 import { FormControl, FormGroupDirective, NgForm, ReactiveFormsModule } from '@angular/forms';
 import { MatFormFieldModule } from '@angular/material/form-field';
 import { MatInputModule } from '@angular/material/input';
@@ -23,7 +23,6 @@ export class ParentErrorStateMatcher implements ErrorStateMatcher {
 
 @Component({
   selector: 'app-input',
-  standalone: true,
   imports: [
     ReactiveFormsModule,
     MatFormFieldModule,
@@ -32,7 +31,8 @@ export class ParentErrorStateMatcher implements ErrorStateMatcher {
     MatButtonModule
   ],
   templateUrl: './input.component.html',
-  styleUrl: './input.component.scss'
+  styleUrl: './input.component.scss',
+  changeDetection: ChangeDetectionStrategy.OnPush
 })
 export class InputComponent {
   control = input.required<FormControl<string | null>>();

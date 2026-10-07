@@ -1,4 +1,4 @@
-import { Component, inject, signal } from '@angular/core';
+import { ChangeDetectionStrategy, Component, inject, signal } from '@angular/core';
 import { FormBuilder, ReactiveFormsModule, Validators } from '@angular/forms';
 import { Router, RouterLink } from '@angular/router';
 import { HttpErrorResponse } from '@angular/common/http';
@@ -28,7 +28,8 @@ import { SocialLoginComponent } from '../../../shared/components/social-login/so
     SocialLoginComponent
   ],
   templateUrl: './login.html',
-  styleUrl: './login.scss'
+  styleUrl: './login.scss',
+  changeDetection: ChangeDetectionStrategy.OnPush
 })
 export class Login {
   private readonly fb = inject(FormBuilder);

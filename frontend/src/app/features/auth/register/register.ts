@@ -1,4 +1,4 @@
-import { Component, inject, signal } from '@angular/core';
+import { ChangeDetectionStrategy, Component, inject, signal } from '@angular/core';
 import { AbstractControl, FormBuilder, ReactiveFormsModule, ValidationErrors, ValidatorFn, Validators } from '@angular/forms';
 import { Router, RouterLink } from '@angular/router';
 import { HttpErrorResponse } from '@angular/common/http';
@@ -28,7 +28,8 @@ import { passwordMatchValidator } from '../../../shared/validators/password-matc
     SocialLoginComponent
   ],
   templateUrl: './register.html',
-  styleUrl: './register.scss'
+  styleUrl: './register.scss',
+  changeDetection: ChangeDetectionStrategy.OnPush
 })
 export class Register {
   private readonly fb = inject(FormBuilder);

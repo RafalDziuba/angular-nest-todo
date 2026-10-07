@@ -1,4 +1,4 @@
-import { Component, inject } from '@angular/core';
+import { ChangeDetectionStrategy, Component, inject } from '@angular/core';
 import { MAT_SNACK_BAR_DATA, MatSnackBarRef } from '@angular/material/snack-bar';
 import { MatIconModule } from '@angular/material/icon';
 import { MatButtonModule } from '@angular/material/button';
@@ -13,8 +13,8 @@ export interface SnackbarData {
   selector: 'app-custom-snackbar',
   templateUrl: './custom-snackbar.html',
   styleUrl: './custom-snackbar.scss',
-  standalone: true,
-  imports: [MatIconModule, MatButtonModule]
+  imports: [MatIconModule, MatButtonModule],
+  changeDetection: ChangeDetectionStrategy.OnPush
 })
 export class CustomSnackbarComponent {
   readonly data = inject<SnackbarData>(MAT_SNACK_BAR_DATA);
