@@ -1,6 +1,6 @@
 <app-auth-layout
-  title="Welcome Back"
-  subtitle="Enter your credentials to access your TaskHub workspace and boost your productivity."
+  title="Witaj ponownie"
+  subtitle="Wprowadź dane logowania, aby przejść do swojej przestrzeni roboczej w TaskHub."
 >
   @if (isEmailNotVerified()) {
     <div class="auth-error-message" role="alert">
@@ -17,11 +17,11 @@
           >
             @if (isResending()) {
               <mat-spinner diameter="16" class="resend-spinner"></mat-spinner>
-              Sending...
+              Wysyłanie...
             } @else if (cooldown.isActive()) {
-              Resend in {{ cooldown.seconds() }}s
+              Wyślij ponownie za {{ cooldown.seconds() }}s
             } @else {
-              Resend verification email &rarr;
+              Wyślij ponownie link weryfikacyjny &rarr;
             }
           </button>
         </div>
@@ -39,21 +39,23 @@
   <form [formGroup]="loginForm" (ngSubmit)="onSubmit()" class="auth-form">
     <app-input
       [control]="loginForm.controls.email"
-      label="Email Address"
+      label="Adres e-mail"
       icon="email"
+      type="email"
       placeholder="example@domain.com"
-    ></app-input>
+    />
 
     <app-input
       [control]="loginForm.controls.password"
-      label="Password"
+      label="Hasło"
       type="password"
-      placeholder="Password"
-    ></app-input>
+      placeholder="Wpisz hasło"
+    />
 
     <div class="auth-actions-inline">
-      <mat-checkbox class="example-margin">Remember me</mat-checkbox>
-      <a href="#" class="forgot-link" (click)="$event.preventDefault()">Forgot password?</a>
+      <!-- TODO: Podpiąć "Remember me" do loginForm i obsłużyć wydłużony czas sesji po stronie backendu -->
+      <mat-checkbox>Zapamiętaj mnie</mat-checkbox>
+      <a href="#" class="forgot-link" (click)="$event.preventDefault()">Nie pamiętasz hasła?</a>
     </div>
 
     <button
@@ -65,22 +67,22 @@
       @if (isLoading()) {
         <mat-spinner diameter="20" class="btn-spinner"></mat-spinner>
       } @else {
-        Login <span class="arrow">&rarr;</span>
+        Zaloguj się <span class="arrow">&rarr;</span>
       }
     </button>
   </form>
 
   <div class="auth-divider">
-    <span>OR CONTINUE WITH</span>
+    <span>LUB KONTYNUUJ PRZEZ</span>
   </div>
 
-  <app-social-login></app-social-login>
+  <app-social-login />
 
   <div class="auth-prompt">
-    Don't have an account? <a routerLink="/register">Register</a>
+    Nie masz jeszcze konta? <a routerLink="/register">Zarejestruj się</a>
   </div>
 
-  <div class="auth-prompt" style="margin-top: 0.75rem;">
-    Didn't receive verification email? <a routerLink="/resend-verification">Resend it</a>
+  <div class="auth-prompt auth-prompt-secondary">
+    Nie dotarł e-mail weryfikacyjny? <a routerLink="/resend-verification">Wyślij ponownie</a>
   </div>
 </app-auth-layout>

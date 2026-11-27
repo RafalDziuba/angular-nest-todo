@@ -1,14 +1,17 @@
-import { ChangeDetectionStrategy, Component, inject, signal } from '@angular/core';
-import { FormBuilder, ReactiveFormsModule, Validators } from '@angular/forms';
-import { RouterLink } from '@angular/router';
 import { HttpErrorResponse } from '@angular/common/http';
-import { MatIconModule } from '@angular/material/icon';
+import { ChangeDetectionStrategy, Component, DestroyRef, inject, signal } from '@angular/core';
+import { takeUntilDestroyed } from '@angular/core/rxjs-interop';
+import { NonNullableFormBuilder, ReactiveFormsModule, Validators } from '@angular/forms';
 import { MatButtonModule } from '@angular/material/button';
+import { MatIconModule } from '@angular/material/icon';
 import { MatProgressSpinnerModule } from '@angular/material/progress-spinner';
+import { RouterLink } from '@angular/router';
+import { finalize } from 'rxjs';
 import { AuthService } from '../../../core/services/auth.service';
+import { NotificationService } from '../../../core/services/notification.service';
+import { AuthLayout } from '../../../shared/components/auth-layout/auth-layout';
+import { FormInput } from '../../../shared/components/input/input';
 import { useCooldown } from '../../../shared/utils/cooldown';
-import { AuthLayoutComponent } from '../../../shared/components/auth-layout/auth-layout.component';
-import { InputComponent } from '../../../shared/components/input/input.component';
 
 @Component({
   selector: 'app-resend-verification',
@@ -18,16 +21,17 @@ import { InputComponent } from '../../../shared/components/input/input.component
     MatIconModule,
     MatButtonModule,
     MatProgressSpinnerModule,
-    AuthLayoutComponent,
-    InputComponent
+    AuthLayout,
+    FormInput,
   ],
   templateUrl: './resend-verification.html',
-  styleUrl: '../login/login.scss',
-  changeDetection: ChangeDetectionStrategy.OnPush
+  changeDetection: ChangeDetectionStrategy.OnPush,
 })
 export class ResendVerification {
-  private readonly fb = inject(FormBuilder);
+  private readonly fb = inject(NonNullableFormBuilder);
   private readonly authService = inject(AuthService);
+  private readonly notificationService = inject(NotificationService);
+  private readonly destroyRef = inject(DestroyRef);
 
   protected readonly isLoading = signal<boolean>(false);
   protected readonly errorMessage = signal<string | null>(null);
@@ -35,7 +39,7 @@ export class ResendVerification {
   protected readonly cooldown = useCooldown();
 
   protected readonly resendForm = this.fb.group({
-    email: ['', [Validators.required, Validators.email]]
+    email: ['', [Validators.required, Validators.email]],
   });
 
   protected onSubmit(): void {
@@ -46,23 +50,26 @@ export class ResendVerification {
     this.isLoading.set(true);
     this.errorMessage.set(null);
     this.successMessage.set(null);
-    const email = this.resendForm.get('email')?.value;
 
-    if (!email) {
-      this.isLoading.set(false);
-      return;
-    }
+    const { email } = this.resendForm.getRawValue();
 
-    this.authService.resendVerification(email).subscribe({
-      next: (response) => {
-        this.isLoading.set(false);
-        this.successMessage.set(response.message);
-        this.cooldown.start(60);
-      },
-      error: (err: HttpErrorResponse) => {
-        this.isLoading.set(false);
-        this.errorMessage.set(err?.error?.message);
-      }
-    });
+    this.authService
+      .resendVerification(email)
+      .pipe(
+        finalize(() => this.isLoading.set(false)),
+        takeUntilDestroyed(this.destroyRef),
+      )
+      .subscribe({
+        next: (response) => {
+          this.successMessage.set(response.message);
+          this.notificationService.showSuccess(response.message);
+          this.cooldown.start(60);
+        },
+        error: (err: HttpErrorResponse) => {
+          const message = err?.error?.message || 'Wystąpił błąd. Spróbuj ponownie.';
+          this.errorMessage.set(message);
+          this.notificationService.showError(message);
+        },
+      });
   }
 }

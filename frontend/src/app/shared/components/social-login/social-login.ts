@@ -2,6 +2,7 @@ import { ChangeDetectionStrategy, Component } from '@angular/core';
 
 @Component({
   selector: 'app-social-login',
+  styleUrl: './social-login.scss',
   changeDetection: ChangeDetectionStrategy.OnPush,
   template: `
     <div class="auth-social">
@@ -12,6 +13,6 @@ import { ChangeDetectionStrategy, Component } from '@angular/core';
         <span class="social-icon github">🐱</span> GitHub
       </button>
     </div>
-  `
+  `,
 })
-export class SocialLoginComponent {}
+export class SocialLogin {}
