@@ -1,6 +1,6 @@
 import { inject, Injectable } from '@angular/core';
 import { MatSnackBar, MatSnackBarConfig } from '@angular/material/snack-bar';
-import { CustomSnackbarComponent, SnackbarData } from '../../shared/components/custom-snackbar/custom-snackbar';
+import { CustomSnackbar, SnackbarData } from '../components/custom-snackbar/custom-snackbar';
 
 export interface NotificationOptions {
   duration?: number;
@@ -8,7 +8,7 @@ export interface NotificationOptions {
 }
 
 @Injectable({
-  providedIn: 'root'
+  providedIn: 'root',
 })
 export class NotificationService {
   private readonly snackBar = inject(MatSnackBar);
@@ -16,7 +16,7 @@ export class NotificationService {
   private readonly defaultConfig: MatSnackBarConfig = {
     duration: 5000,
     horizontalPosition: 'right',
-    verticalPosition: 'bottom'
+    verticalPosition: 'bottom',
   };
 
   private show(message: string, type: SnackbarData['type'], options?: NotificationOptions): void {
@@ -27,11 +27,11 @@ export class NotificationService {
       data: {
         message,
         type,
-        hideIcon: options?.hideIcon
-      }
+        hideIcon: options?.hideIcon,
+      },
     };
 
-    this.snackBar.openFromComponent(CustomSnackbarComponent, config);
+    this.snackBar.openFromComponent(CustomSnackbar, config);
   }
 
   showDefault(message: string, options?: NotificationOptions): void {

@@ -1,6 +1,6 @@
 <app-auth-layout
-  title="Resend Verification"
-  subtitle="Enter your email address to receive a new verification link and activate your account."
+  title="Wyślij link ponownie"
+  subtitle="Podaj swój adres e-mail, aby otrzymać nowy link aktywacyjny do konta."
 >
   @if (errorMessage()) {
     <div class="auth-error-message" role="alert">
@@ -23,10 +23,11 @@
   <form [formGroup]="resendForm" (ngSubmit)="onSubmit()" class="auth-form">
     <app-input
       [control]="resendForm.controls.email"
-      label="Email Address"
+      label="Adres e-mail"
       icon="email"
+      type="email"
       placeholder="example@domain.com"
-    ></app-input>
+    />
 
     <button
       mat-flat-button
@@ -37,14 +38,14 @@
       @if (isLoading()) {
         <mat-spinner diameter="20" class="btn-spinner"></mat-spinner>
       } @else if (cooldown.isActive()) {
-        Resend in {{ cooldown.seconds() }}s
+        Wyślij ponownie za {{ cooldown.seconds() }}s
       } @else {
-        Send Verification Link <span class="arrow">&rarr;</span>
+        Wyślij link weryfikacyjny <span class="arrow">&rarr;</span>
       }
     </button>
   </form>
 
   <div class="auth-prompt">
-    Remember your credentials? <a routerLink="/login">Back to Login</a>
+    Pamiętasz swoje dane logowania? <a routerLink="/login">Wróć do logowania</a>
   </div>
 </app-auth-layout>

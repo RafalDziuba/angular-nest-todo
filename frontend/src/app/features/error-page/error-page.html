@@ -1,0 +1,21 @@
+<div class="error-wrapper">
+  <mat-card class="error-card">
+    <div class="error-icon-badge" [class.is-critical]="view().statusCode >= 500">
+      <mat-icon>{{ view().icon }}</mat-icon>
+    </div>
+
+    <span class="error-code">Błąd {{ view().statusCode }}</span>
+    <h2>{{ view().title }}</h2>
+    <p class="error-description">{{ view().description }}</p>
+
+    <div class="error-actions">
+      @if (isAuthenticated()) {
+        <a mat-flat-button routerLink="/dashboard" class="btn-primary">Przejdź do pulpitu</a>
+      } @else {
+        <a mat-flat-button routerLink="/login" class="btn-primary">Przejdź do logowania</a>
+      }
+
+      <button mat-stroked-button type="button" (click)="goBack()">Wróć</button>
+    </div>
+  </mat-card>
+</div>

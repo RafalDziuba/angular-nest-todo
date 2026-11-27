@@ -4,6 +4,7 @@ import { MatCardModule } from '@angular/material/card';
 @Component({
   selector: 'app-auth-layout',
   imports: [MatCardModule],
+  styleUrl: './auth-layout.scss',
   changeDetection: ChangeDetectionStrategy.OnPush,
   template: `
     <div class="auth-wrapper">
@@ -17,13 +18,13 @@ import { MatCardModule } from '@angular/material/card';
             <p class="subtitle">{{ subtitle() }}</p>
           }
         </div>
-        
-        <ng-content></ng-content>
+
+        <ng-content />
       </mat-card>
     </div>
-  `
+  `,
 })
-export class AuthLayoutComponent {
-  title = input.required<string>();
-  subtitle = input<string>('');
+export class AuthLayout {
+  readonly title = input.required<string>();
+  readonly subtitle = input<string>('');
 }

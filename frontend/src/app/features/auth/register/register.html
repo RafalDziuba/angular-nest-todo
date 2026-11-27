@@ -23,14 +23,14 @@
       icon="person"
       placeholder="np. Jan"
       [customErrors]="nameErrors"
-    ></app-input>
+    />
     <app-input
       [control]="registerForm.controls.lastName"
       label="Nazwisko"
       icon="person"
       placeholder="np. Kowalski"
       [customErrors]="nameErrors"
-    ></app-input>
+    />
 
     <app-input
       [control]="registerForm.controls.email"
@@ -38,7 +38,7 @@
       icon="email"
       placeholder="example@domain.com"
       type="email"
-    ></app-input>
+    />
 
     <app-input
       [control]="registerForm.controls.password"
@@ -46,17 +46,19 @@
       type="password"
       placeholder="Wpisz hasło"
       [customErrors]="passwordErrors"
-    ></app-input>
+    />
 
     <app-input
       [control]="registerForm.controls.confirmPassword"
       label="Potwierdź hasło"
       type="password"
       placeholder="Powtórz hasło"
-    ></app-input>
+      parentErrorKey="passwordMismatch"
+      [customErrors]="confirmPasswordErrors"
+    />
 
     <div class="auth-form-checkboxes">
-      <mat-checkbox formControlName="privacyPolicyAccepted" class="example-margin">
+      <mat-checkbox formControlName="privacyPolicyAccepted">
         Akceptuję politykę prywatności *
       </mat-checkbox>
       @if (
@@ -66,7 +68,7 @@
         <span class="checkbox-error"> Musisz zaakceptować politykę prywatności. </span>
       }
 
-      <mat-checkbox formControlName="newsletterAccepted" class="example-margin">
+      <mat-checkbox formControlName="newsletterAccepted">
         Zgadzam się na otrzymywanie powiadomień e-mail
       </mat-checkbox>
     </div>
@@ -89,7 +91,7 @@
     <span>LUB ZAREJESTRUJ PRZEZ</span>
   </div>
 
-  <app-social-login></app-social-login>
+  <app-social-login />
 
   <div class="auth-prompt">Masz już konto? <a routerLink="/login">Zaloguj się</a></div>
 </app-auth-layout>

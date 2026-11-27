@@ -5,7 +5,13 @@
     }
     <span class="snackbar-message">{{ data.message }}</span>
   </div>
-  <button mat-icon-button class="snackbar-close-btn" (click)="close()">
+  <button
+    mat-icon-button
+    type="button"
+    class="snackbar-close-btn"
+    aria-label="Zamknij powiadomienie"
+    (click)="close()"
+  >
     <mat-icon>close</mat-icon>
   </button>
 </div>

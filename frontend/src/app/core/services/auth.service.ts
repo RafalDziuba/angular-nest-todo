@@ -1,6 +1,7 @@
-import { inject, Injectable, signal } from '@angular/core';
+import { DOCUMENT } from '@angular/common';
 import { HttpClient } from '@angular/common/http';
-import { Observable, tap, switchMap, catchError, of } from 'rxjs';
+import { computed, inject, Injectable, signal } from '@angular/core';
+import { catchError, finalize, Observable, of, switchMap, tap } from 'rxjs';
 
 export interface User {
   id?: number | string;
@@ -14,15 +15,17 @@ export interface User {
 })
 export class AuthService {
   private readonly http = inject(HttpClient);
+  private readonly document = inject(DOCUMENT);
 
-  readonly currentUser = signal<User | null>(null);
-
+  private readonly _currentUser = signal<User | null>(null);
+  readonly currentUser = this._currentUser.asReadonly();
+  readonly isAuthenticated = computed(() => this._currentUser() !== null);
 
   login(email: string, password: string): Observable<User> {
     return this.http.post<{ success: boolean }>('/auth/login', { email, password }).pipe(
-      // switchMap pozwala nam na wykonanie kolejnego zapytania (pobranie profilu)
+      // switchMap pozwala na wykonanie kolejnego zapytania (pobranie profilu)
       // i zwrócenie jego wyniku dalej
-      switchMap(() => this.getMe())
+      switchMap(() => this.getMe()),
     );
   }
 
@@ -41,38 +44,41 @@ export class AuthService {
     return this.http.post<{ message: string }>('/auth/resend-verification', { email });
   }
 
-
   getMe(): Observable<User> {
     return this.http.get<User>('/auth/me').pipe(
       tap((user) => {
-        this.currentUser.set(user);
-      })
+        this._currentUser.set(user);
+      }),
     );
   }
 
   private hasCookie(name: string): boolean {
-    return document.cookie.split(';').some((c) => c.trim().startsWith(`${name}=`));
+    return this.document.cookie.split(';').some((c) => c.trim().startsWith(`${name}=`));
   }
 
   initSession(): Observable<User | null> {
     if (!this.hasCookie('is_logged_in')) {
-      this.currentUser.set(null);
+      this._currentUser.set(null);
       return of(null);
     }
 
     return this.getMe().pipe(
       catchError(() => {
-        this.currentUser.set(null);
+        this._currentUser.set(null);
         return of(null);
-      })
+      }),
     );
+  }
+
+  clearSession(): void {
+    this._currentUser.set(null);
   }
 
   logout(): Observable<{ success: boolean }> {
     return this.http.post<{ success: boolean }>('/auth/logout', {}).pipe(
-      tap(() => {
-        this.currentUser.set(null);
-      })
+      finalize(() => {
+        this._currentUser.set(null);
+      }),
     );
   }
 }
